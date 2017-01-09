@@ -1,1 +1,1 @@
-I'm a cool fun test file!
+I'm a cool fun test file! I was committed once and then edited! 
