@@ -1,0 +1,14 @@
+WHAT IS NEEDED
+
+COMPLETED
+
+
+IN PROGRESS
+
+How to change permissions to use DMs
+	Note that you must regenerate your access and consumer keys again after changing permissions
+
+Tutorial pages on how to send and read direct messages using custom GET and POST calls
+How to search for a message from a friend using custom GET calls
+
+Use static Express pages to serve up the How To site

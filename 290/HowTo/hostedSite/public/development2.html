@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Basic Metadata -->
+  <title>Twitter and Open Source Tutorial</title>
+  <meta name="Josh Atchley" content="">
+
+  <!-- Mobile Specific Metas (from skeleton.css) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- FONT (from skeleton.css) -->
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+  <!-- CSS (from skeleton.css) -->
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+</head>
+<body>
+	<div class="container">
+    <div class="row">
+      <div class="one-column" style="margin-top: 10%">
+        <h1>
+			Levaraging the Library and Twitter API: Part 2
+		</h1>
+
+        <h3> 
+			Nested callbacks to work with asynchronous data
+		</h3>
+        <p> 
+			Hold on, it's about to get a lot more complicated (and uglier) in here.
+		</p>
+			<img src="images/example2.png">
+		<p>
+			Yikes! There's a lot to unpack here, but if we break it down in pieces you'll see it's not so bad.
+			</br>
+			Like before, <code>Line 74</code> defines the URL for the call we want to make. This time we're looking through all of Twitter for a user with a screen name that matches the given <code>name</code>.
+			We construct our <code>params</code> like before, and call our custom getter again.
+			</br>
+			</br>
+			<code>Line 80</code> is a for loop that iterates through each piece of data we get, just in case it somehow returns more than one JSON object. When we find our match, we save that user's ID, log that result to the console, and 
+			construct our next GET request.
+			</br>
+			</br>
+			<code>Line 88</code> and <code>Line 89</code> might look familiar to you, since these are the same values we used for our earlier function to get the most recent message. However, here we are going to check up to the limit allowed by 
+			the Twitter API in a single GET call, which is 200 records. We need to do this so we can find older messages.
+			</br>
+			</br>
+			<code>Line 94</code> begins our for loop in the success callback, where we iterate through our returned messages and try to match the message's <code>sender_id</code> to the <code>matchingId</code> for our search parameter username.
+			When we find the most recent message from that user, we log some basic information about the message to the console. The result of that should look something like this:
+			<img src="images/result2.png">
+		</p>
+		
+		<p>
+			And there we have it, a message of wisdom from the sailing team at my alma mater, from February 2015 no less.
+		</p>
+	
+		
+        <h3>
+			Coming Up
+		</h3>
+        <p>
+			Some closing thoughts and ideas for future development.
+		</p>
+
+        <a class="button button-primary" href="development.html">Previous</a>
+        <a class="button button-primary" href="conclusion.html">Next</a>
+    </div>
+</div>
+
+</div></body></html>

@@ -1,0 +1,14 @@
+{
+  "name": "twitter-test-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "auto-poster.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Josh Atchley",
+  "license": "ISC",
+  "dependencies": {
+    "twitter-node-client": "0.0.6"
+  }
+}

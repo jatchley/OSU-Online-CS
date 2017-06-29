@@ -1,0 +1,36 @@
+<script src="client.js"></script>
+<h1>Completed Exercises</h1>
+<form id="workoutForm">
+    <fieldset>
+        <legend>New Workout</legend>
+        Name:
+        <input type="text" name="workoutName" id="workoutName"> Reps:
+        <input type="text" name="workoutReps" id="workoutReps"> Weight:
+        <input type="text" name="workoutWeight" id="workoutWeight"> Date:
+        <input type="date" name="workoutDate" id="workoutDate"> Lbs:
+        <input type="checkbox" name="workoutLbs" id="workoutLbs">
+        <input type="submit" id="workoutSubmit">
+    </fieldset>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            {{#each columns}}
+            <th>{{this.name}}</th>
+            {{/each}}
+        </tr>
+        <tbody id="workoutTable">
+            {{#each exercises}}
+            <tr>
+                <td>{{this.name}}</td>
+                <td>{{this.reps}}</td>
+                <td>{{this.weight}}</td>
+                <td>{{this.date}}</td>
+                <td>{{this.lbs}}</td>
+                <td><button onclick="editRow({{this.id}})">Edit</button></td>
+                <td><button onclick="deleteRow(this, {{this.id}})">Delete</button></td>
+            </tr>
+            {{/each}}
+        </tbody>
+</table>

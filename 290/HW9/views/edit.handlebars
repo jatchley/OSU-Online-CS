@@ -1,0 +1,14 @@
+<script src="edit.js"></script>
+
+<form id="editWorkoutForm">
+    <fieldset>
+        <legend>Edit Workout</legend>
+        <input type="hidden" name="workoutId" id="workoutId" value="{{exercise.id}}"> Name:
+        <input type="text" name="workoutName" id="workoutName" value="{{exercise.name}}"> Reps:
+        <input type="text" name="workoutReps" id="workoutReps" value="{{exercise.reps}}"> Weight:
+        <input type="text" name="workoutWeight" id="workoutWeight" value="{{exercise.weight}}"> Date:
+        <input type="date" name="workoutDate" id="workoutDate" value="{{exercise.date}}"> Lbs:
+        <input type="checkbox" name="workoutLbs" id="workoutLbs" value={{exercise.lbs}}>
+        <input type="submit" id="updateWorkout">
+    </fieldset>
+</form>

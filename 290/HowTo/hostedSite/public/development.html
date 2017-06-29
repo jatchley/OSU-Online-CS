@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Basic Metadata -->
+  <title>Twitter and Open Source Tutorial</title>
+  <meta name="Josh Atchley" content="">
+
+  <!-- Mobile Specific Metas (from skeleton.css) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- FONT (from skeleton.css) -->
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+  <!-- CSS (from skeleton.css) -->
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+</head>
+<body>
+	<div class="container">
+    <div class="row">
+      <div class="one-column" style="margin-top: 10%">
+        <h1>
+			Levaraging the Library and Twitter API
+		</h1>
+
+        <h3> 
+			There ain't no REST for the wicked
+		</h3>
+		<img src="images/twitterApi1.png">
+        <p> 
+			Here is an example of what I was saying earlier about functionality that exists in the Twitter API but not in the library we're using. The bottom URL of each block is the REST call path, and the middle line of each block
+			is the REST call with some example parameters. There is more extensive documentation for these (and all the other REST calls) in the <a href="https://dev.twitter.com/rest/public" target="_blank">Twitter REST API documenation.</a>
+			</br>
+			</br>
+			So how do we access these REST calls if our library doesn't have a method that matches up with them? That's where the library's custom GET and POST methods come in to play. Here they are again for reference:
+			<img src="images/setup2.png">
+		</p>
+		
+		<h3>
+			Putting two and two together
+		</h3>
+		<img src="images/example1.png">
+		<p>
+			Here is the first function we can write to make some custom functionality, combining what we know is possible from the Twitter API documentation and from our Twitter JS Client library. Let's go through this like Johnny Cash: one piece at a time.
+			</br>
+			<code>Line 15</code> defines our generic error callback, which is basically just a function that tells us if something went wrong and then prints out an error message to the console. You can make more customized error callbacks for individual
+			functions if you want, which is what I tended to do for my success callbacks when making this guide.
+			</br>
+			</br>
+			<code>Line 20</code> is where the fun begins. <code>Line 21</code> defines the URL for the REST call, which we know from the Twitter API documentation. We don't need the whole URL because we know from investigating how the 
+			<code>twitter.getCustomApiCall()</code> works that it prepends the information to access Twitter and handles parsing out the query parameters for us. All we need to do is give it the path for the REST call and whatever custom parameters
+			we care about. In this case, we only want the most recent message, so we set the <code>count</code> parameter to 1.
+			</br>
+			</br>
+			On <code>Line 24</code> we construct our function with our URL, parameters, and callbacks. In the success callback (the <code>function(data) {...}</code> piece of this), we parse out the returned JSON and log some of the fields to the console.
+			The result should look something like this:
+			<img src="images/result1.png">
+		</p>
+		
+		<p>
+			Awww, what a nice message from my sister. It's a nice message, but what can we do if we want to see the most recent message from a different person? Right now all we can do is look at the most recent message in our inbox. Let's find out how in the
+			next section.
+		</p>
+
+        <h3>
+			Coming Up
+		</h3>
+        <p>
+			We're going to weave together multiple pieces of the Twitter API and the library we're using to make a more complicated piece of functionality.
+		</p>
+
+        <a class="button button-primary" href="appSetup.html">Previous</a>
+        <a class="button button-primary" href="development2.html">Next</a>
+    </div>
+</div>
+
+</div></body></html>

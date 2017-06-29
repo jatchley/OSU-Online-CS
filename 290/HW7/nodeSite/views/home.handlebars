@@ -1,0 +1,16 @@
+<h1>{{requestType}} Request Received</h1>
+
+<h4>Information from the URL (if available)</h1>
+<ul>
+  {{#each urlData}}
+    <li>{{this.name}}: {{this.value}}
+  {{/each}}
+</ul>
+</br>
+
+<h4>Information from the body (if available)</h1>
+<ul>
+  {{#each bodyData}}
+    <li>{{this.name}}: {{this.value}}
+  {{/each}}
+</ul>

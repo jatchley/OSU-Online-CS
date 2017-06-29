@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="script.js"></script>
+  </head>
+  <body>
+    <form id="weatherForm">
+      <fieldset>
+        <legend>Weather Form</legend>
+			City:
+			<input type="text" name="weatherCity" id="weatherCity">
+
+			Zip Code:
+			<input type="text" name="weatherZip" id="weatherZip">
+        <input type="submit" id="weatherSubmit">
+      </fieldset>
+    </form>
+	<form id="postForm">
+	  <fieldset>
+        <legend>POST Test Form</legend>
+			Test Input:
+			<input type="text" name="testInput" id="testInput">
+        <input type="submit" id="testSubmit">
+      </fieldset>
+	</form>
+    <div>
+      <h4>Weather Results</h2>
+      <ul>
+        <li><b>City: </b><span id="weatherDisplayCity"></span></li>
+        <li><b>Temperature: </b><span id="weatherDisplayTemp"></span></li>
+		<li><b>Humidity: </b><span id="weatherDisplayHumidity"></span></li>
+      </ul>
+    </div>
+	<div>
+      <h4>Post Test Results</h2>
+      <ul>
+        <li><b>POST Test Result: </b><span id="testResult"></span></li>
+      </ul>
+    </div>
+  </body>
+</html>
