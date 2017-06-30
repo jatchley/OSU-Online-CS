@@ -1,4 +1,5 @@
 """Reads integers from a file and performs a merge sort on them, writing the result to merge.out"""
+import sys
 
 
 class IntsToSort:
@@ -11,18 +12,30 @@ class IntsToSort:
 
 def get_ints_to_sort(filename):
     """Reads sorting instructions from the given file name"""
-    file = open(filename, "r")
-    int_params = file.readline().split()
+    all_ints_to_sort = []
+    # Read all the lines of the file as int arrays to be sorted
+    with open(filename, "r") as file:
+        for line in file:
+            int_params = line.split()
+            # First element is how many integers there are to be counted
+            int_count = int_params[0]
+            # Remove the first element, it's not being sorted
+            del int_params[0]
+            # Ints to be sorted are the remaining
+            int_array = int_params
+            # Add to storage array of all ints to be sorted
+            all_ints_to_sort.append(IntsToSort(int_count, int_array))
+
+    return all_ints_to_sort
+
+
+def write_output_to_file(filename, message):
+    """Writes given message string to the given file name"""
+    file = open(filename, "a")
+    file.write(message + "\n")
     file.close()
 
-    int_count = int_params[0]
-    del int_params[0]
-    #int_array = list(map(int, int_params))
-    int_array = int_params
 
-    return IntsToSort(int_count, int_array)
-
-# TODO: fix this
 def merge(left, right):
     """Merges two arrays together from smallest to largest"""
     result = []
@@ -46,7 +59,7 @@ def merge(left, right):
 
     return result
 
-# TODO: fix this
+
 def merge_sort(arr):
     """Performs recursive merge sort of given IntsToSort"""
     if len(arr) < 2:
@@ -61,23 +74,34 @@ def merge_sort(arr):
 
 
 def main():
-    # TODO: Handle reading and sorting multiple lines from data.txt
     """Main entry for this program"""
-    # TODO: read in file location as user input
-    filename = "C:/Users/josh/Source/Repos/OsuCs290/325/HW1/data.txt"
-    ints_to_sort = get_ints_to_sort(filename)
+    input_filename = sys.path[0] + "\\data.txt"
+    output_filename = sys.path[0] + "\\merge.out"
+    all_ints_to_sort = get_ints_to_sort(input_filename)
 
-    count = ints_to_sort.int_count
-    arr = ints_to_sort.int_array
-
-    print("Count of ints to sort: " + count)
+    print("Starting merge sorting of " + str(len(all_ints_to_sort)) +
+          " lines from data.txt")
     i = 0
-    print("Array of ints to sort: ")
-    while i < len(arr):
-        print(arr[i])
-        i += 1
 
-    print(merge_sort(arr))
+    while i < len(all_ints_to_sort):
+        count = all_ints_to_sort[i].int_count
+        # Convert string array to int array
+        arr = [int(item) for item in all_ints_to_sort[i].int_array]
+
+        print("Sorting line " + str(i + 1))
+        print("Count of ints to sort: " + count)
+        print("Array of ints to sort: ")
+        print(arr)
+        print("Sorted array of ints: ")
+        arr = merge_sort(arr)
+        arr_to_print = ""
+        for elem in arr:
+            arr_to_print += str(elem) + " "
+
+        print(arr_to_print)
+        print("Writing sorted array to merge.out")
+        write_output_to_file(output_filename, arr_to_print)
+        i += 1
 
 
 main()
