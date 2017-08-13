@@ -16,6 +16,7 @@ import math
 import sys
 import time
 import random
+from timeit import default_timer as timer
 
 class City:
     def __init__(self, number, xc, yc):
@@ -44,12 +45,12 @@ def initTour(inFile):
             cities.append(City(cParams[0], cParams[1], cParams[2]))
     return cities
 
-def anneal(tour, Tmax, alpha, steps, attempts, changes):
+def anneal(tour, Tmax, alpha, steps, attempts, changes, startTime):
     temp = Tmax
     for k in range(steps):
     # changed to loop up to
     #while temp > 1e-6:
-        print("Temperature = {}, Tour Length = {}".format(temp, tourLength(tour)))
+        print("Temperature = {}, Tour Length = {}, Time Elapsed = {}".format(temp, tourLength(tour), timer() - startTime))
         tour = tSearch(tour, temp, attempts, changes)
         temp *= alpha
     return tour
@@ -120,8 +121,8 @@ def main():
     random.seed(time.clock())
 
     # set up I/O files
-    inputFileName = str(sys.argv[1])
-    #inputFileName = "tsp_example_2.txt"
+    #inputFileName = str(sys.argv[1])
+    inputFileName = sys.path[0] + "/tsp_example_3.txt"
     inputFile = open(inputFileName, 'r')
     outputFileName = inputFileName + ".tour"
     outputFile = open(outputFileName, 'w')
@@ -139,7 +140,10 @@ def main():
     changes = 10 * n
 
     # call the annealing function with the defined parameters
-    cityTour = anneal(cityTour, Tmax, alpha, steps, attempts, changes)
+    startTime = timer()
+    cityTour = anneal(cityTour, Tmax, alpha, steps, attempts, changes, startTime)
+    end = timer()
+    print("Algorithm ran in {} seconds".format(end - startTime))
 
     # write output file
     outputFile.write(str(tourLength(cityTour)) + '\n')
