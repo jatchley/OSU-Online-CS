@@ -75,8 +75,8 @@ def merge_sort(arr):
 
 def main():
     """Main entry for this program"""
-    input_filename = sys.path[0] + "\\data.txt"
-    output_filename = sys.path[0] + "\\merge.out"
+    input_filename = sys.path[0] + "/data.txt"
+    output_filename = sys.path[0] + "/merge.out"
     all_ints_to_sort = get_ints_to_sort(input_filename)
 
     print("Starting merge sorting of " + str(len(all_ints_to_sort)) +

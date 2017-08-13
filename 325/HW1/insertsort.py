@@ -63,8 +63,8 @@ def insertion_sort(arr):
 
 def main():
     """Main entry for this program"""
-    input_filename = sys.path[0] + "\\data.txt"
-    output_filename = sys.path[0] + "\\insert.out"
+    input_filename = sys.path[0] + "/data.txt"
+    output_filename = sys.path[0] + "/insert.out"
     all_ints_to_sort = get_ints_to_sort(input_filename)
 
     print("Starting insertion sorting of " + str(len(all_ints_to_sort)) +
