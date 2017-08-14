@@ -121,8 +121,8 @@ def main():
     random.seed(time.clock())
 
     # set up I/O files
-    #inputFileName = str(sys.argv[1])
-    inputFileName = sys.path[0] + "/tsp_example_3.txt"
+    inputFileName = str(sys.argv[1])
+    #inputFileName = sys.path[0] + "/tsp_example_3.txt"
     inputFile = open(inputFileName, 'r')
     outputFileName = inputFileName + ".tour"
     outputFile = open(outputFileName, 'w')
@@ -156,4 +156,3 @@ def main():
 
 if __name__ == '__main__':
   main()
-
