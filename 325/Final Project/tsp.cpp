@@ -237,24 +237,28 @@ bool accept(float dE, int temp)
 	return acceptance;
 }
 
-//This is still under construction
+// TODO: Finish refactoring this
 void tChange(vector<City> &cities, int ci, int cj)
 {
 	int n = cities.size();
-
 	//snippet does not wrap around end of list
 	if (ci < cj)
 	{
-		// TODO: Finish refactoring this
-		// vector<City> tSnip(&cities[(ci + 1)], &cities(cj + 1)]);
-		// vector<City> rSnip(reverse(tSnip.begin(), tSnip.end()));
-		// cities[(ci + 1) : (cj + 1)] = rSnip[:];
+		// TODO: Debug only
+		City test = cities[ci];
+		City test2 = cities[(ci + 1)];
+		City test3 = cities[cj];
+		City test4 = cities[(cj + 1)];
+		
+		vector<City> tSnip(&cities[(ci + 1)], &cities[(cj + 1)]);
+		reverse(tSnip.begin(), tSnip.end());
+		// TODO: How to set the vector values in this range?
+		//assign(&cities.begin() + ci + 1, &cities.begin() + cj + 1, tSnip[]); 
 	}
 	else
 	{
-		// TODO: Finish refactoring this
 		//the snippet wraps around the end of the list, so ninjutsu is needed...
-		// tSnip = cities[(ci + 1) : ] + tour[:(cj + 1)]
+		// tSnip = tour[(ci + 1) : ] + tour[:(cj + 1)]
 		// rSnip = list(reversed(tSnip))
 		// divider = len(tour[(ci + 1) : ])
 		// tour[(ci + 1) : ] = rSnip[:divider]
