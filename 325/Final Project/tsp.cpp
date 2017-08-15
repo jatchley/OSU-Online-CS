@@ -12,14 +12,16 @@
 #include <cfenv>
 #include <sstream>
 
-#define SSTR( x ) static_cast< std::ostringstream & >( \
-        ( std::ostringstream() << std::dec << x ) ).str()
+#define SSTR(x) static_cast<std::ostringstream &>(           \
+					(std::ostringstream() << std::dec << x)) \
+					.str()
 
 using namespace std;
 
-class City {
+class City
+{
 
-public:
+  public:
 	int number;
 	int x;
 	int y;
@@ -31,47 +33,53 @@ public:
 	int getX();
 	int distanceTo(City city);
 };
-City::City() {
+
+City::City()
+{
 	this->number = 0;
 	this->x = 0;
 	this->y = 0;
 }
-City::City(int number, int x, int y) {
-		this->number = number;
-		this->x = x;
-		this->y = y;
-	}
 
-	//Gets y
-int City::getY() {
-		return this->y;
-	}
+City::City(int number, int x, int y)
+{
+	this->number = number;
+	this->x = x;
+	this->y = y;
+}
 
-	//Gets x
-int City::getX() {
-		return this->x;
-	}
+//Gets y
+int City::getY()
+{
+	return this->y;
+}
 
-	//Gets distance to given city
-int City::distanceTo(City city) {
-		int xDistance = pow(getX() - city.getX(), 2);
-		int yDistance = pow(getY() - city.getY(), 2);
-		int d = nearbyint(sqrt(xDistance + yDistance));
-		return d;
-	}
+//Gets x
+int City::getX()
+{
+	return this->x;
+}
 
+//Gets distance to given city
+int City::distanceTo(City city)
+{
+	int xDistance = pow(getX() - city.getX(), 2);
+	int yDistance = pow(getY() - city.getY(), 2);
+	int d = nearbyint(sqrt(xDistance + yDistance));
+	return d;
+}
 
-int tourLength(vector<City>& cities);
-void initTour(ifstream& inputFile, vector<City>& cities);
-void printVector(vector<City>& cities);
-void anneal(vector<City>& cities, int Tmax, int alpha, int steps, int attempts, int changes, int startTime);
-void tSearch(vector<City>& cities, int temp, int attempts, int changes);
-tuple tSelect(vector<City>& cities);
+int tourLength(vector<City> &cities);
+void initTour(ifstream &inputFile, vector<City> &cities);
+void printVector(vector<City> &cities);
+void anneal(vector<City> &cities, int Tmax, int alpha, int steps, int attempts, int changes, int startTime);
+void tSearch(vector<City> &cities, int temp, int attempts, int changes);
+tuple<int, int, float> tSelect(vector<City> &cities);
 bool accept(float dE, int temp);
-//void tChange(vector<City>& cities, int ci, int cj);
+void tChange(vector<City> &cities, int ci, int cj);
 
-int main(int argc, char* argv[]) {
-
+int main(int argc, char *argv[])
+{
 	unsigned seed;
 
 	seed = time(0);
@@ -101,16 +109,16 @@ int main(int argc, char* argv[]) {
 
 	//call the annealing function with the defined parameters
 	int startTime = clock();
-	
-	//anneal(cities, Tmax, alpha, steps, attempts, changes, startTime);
 
-	int duration = (clock() - startTime) / (double) CLOCKS_PER_SEC;
+	anneal(cities, Tmax, alpha, steps, attempts, changes, startTime);
+
+	int duration = (clock() - startTime) / (double)CLOCKS_PER_SEC;
 	cout << "Algorithm ran in " << duration << "seconds." << endl;
 
 	//write outputfile
 	string outfilename = filename + ".tourcpp";
 	outputFile.open(outfilename.c_str());
-		
+
 	outputFile << tourLength(cities) << endl;
 	for (int i = 0; i < cities.size(); i++)
 	{
@@ -120,37 +128,40 @@ int main(int argc, char* argv[]) {
 
 	inputFile.close();
 	outputFile.close();
-	
+
 	return 0;
 }
 
-int tourLength(vector<City>& cities) {
+int tourLength(vector<City> &cities)
+{
 	int n = cities.size();
 	int dSum = cities[n - 1].distanceTo(cities[0]); //fix this
-		for (int i = 0; i < (n - 1); i++)
-		{
-			dSum += cities[i].distanceTo(cities[i + 1]);
-		}
+	for (int i = 0; i < (n - 1); i++)
+	{
+		dSum += cities[i].distanceTo(cities[i + 1]);
+	}
 	return dSum;
-
 }
 
-void initTour(ifstream& inputFile, vector<City>& cities) {
+void initTour(ifstream &inputFile, vector<City> &cities)
+{
 	City temp;
-	while (inputFile >> temp.number >> temp.x >> temp.y) {
+	while (inputFile >> temp.number >> temp.x >> temp.y)
+	{
 		cities.push_back(temp);
 	}
-
 }
 
-void printVector(vector<City>& cities) {
-	for (int i = 0; i < cities.size(); i++) {
+void printVector(vector<City> &cities)
+{
+	for (int i = 0; i < cities.size(); i++)
+	{
 		cout << cities[i].number << ' ' << cities[i].x << ' ' << cities[i].y << endl;
 	}
-
 }
 
-void anneal(vector<City>& cities, int Tmax, int alpha, int steps, int attempts, int changes, int startTime){
+void anneal(vector<City> &cities, int Tmax, int alpha, int steps, int attempts, int changes, int startTime)
+{
 	int temp = Tmax;
 	for (int i = 0; i < steps; i++)
 	{
@@ -161,20 +172,20 @@ void anneal(vector<City>& cities, int Tmax, int alpha, int steps, int attempts, 
 		tSearch(cities, temp, attempts, changes);
 		temp *= alpha;
 	}
-
 }
-//As you may see when compiling having problems w/ tuples, they should work in C++ but ... 
-void tSearch(vector<City>& cities, int temp, int attempts, int changes) {
+
+void tSearch(vector<City> &cities, int temp, int attempts, int changes)
+{
 	int nAtt = 0;
 	int nChg = 0;
 
 	while (nAtt < attempts && nChg < changes)
 	{
 		// tSelect will return the tuple ci, cj, dE
-		tuple selectionTuple = tSelect(cities);
-		if (accept(selectionTuple[2], temp))
+		tuple<int, int, float> selectionTuple = tSelect(cities);
+		if (accept(get<2>(selectionTuple), temp))
 		{
-			tChange(cities, selectionTuple[0], selectionTuple[1]);
+			tChange(cities, get<0>(selectionTuple), get<1>(selectionTuple));
 			nChg += 1;
 		}
 		nAtt += 1;
@@ -185,30 +196,32 @@ void tSearch(vector<City>& cities, int temp, int attempts, int changes) {
 	}
 }
 
-tuple tSelect(vector<City>& cities) {
+tuple<int, int, float> tSelect(vector<City> &cities)
+{
+	//pick random cities in tour (-> remainder will be a number between 0 and max-1)
+	int max = cities.size();
 
-	//pick random cities in tour (-> remainder will be a number between 0 and max-1) 
-	max = cities.sizeof();
 	int ci = rand() % max;
 	int cj = rand() % max;
 
 	//find the cities directly after ci and cj
-	int cinx = (ci + 1) % cities.sizeof();
-		int cjnx = (cj + 1) % cities.sizeof();
+	int cinx = (ci + 1) % cities.size();
+	int cjnx = (cj + 1) % cities.size();
 
-	//calculate energy change, i.e.tour length change, for reversing the sequence
-	//between ci and cj
+	//calculate energy change, i.e.tour length change, for reversing the sequence between ci and cj
+	int dE = 0;
 	if (ci != cj)
-		dE = (cities[ci].distanceTo(cities[cj]) + cities[cinx].distanceTo(cities[cjnx])
-				- cities[ci].distanceTo(cities[cinx]) - cities[cj].distanceTo(cities[cjnx]));
-	else
-		dE = 0;
-
-	return ci, cj, float(dE);
+	{
+		dE = (cities[ci].distanceTo(cities[cj]) + cities[cinx].distanceTo(cities[cjnx]) - cities[ci].distanceTo(cities[cinx]) - cities[cj].distanceTo(cities[cjnx]));
+	}
+	tuple<int, int, float> result (ci, cj, float(dE));
+	return result;
 }
+
 //I'm not sure what line 214 is calculating or if this function is returning just a bool?
-bool accept(float dE, int temp){
-	bool acceptance;	
+bool accept(float dE, int temp)
+{
+	bool acceptance;
 	if (dE > 0)
 	{
 		int a = (exp(-dE / temp) > rand());
@@ -218,31 +231,51 @@ bool accept(float dE, int temp){
 			acceptance = true;
 	}
 
-	else
+	else 
 		acceptance = true;
 
 	return acceptance;
 }
 
 //This is still under construction
-/*void tChange(vector<City>& cities, int ci, int cj) {
-	
-	int n = cities.sizeof();
+void tChange(vector<City> &cities, int ci, int cj)
+{
+	int n = cities.size();
 
 	//snippet does not wrap around end of list
 	if (ci < cj)
 	{
-		vector <City> tSnip(&cities[(ci + 1)], &cities(cj + 1)]);
-		vector <City> rSnip(reverse(tSnip.begin(), tSnip.end()));
-		cities[(ci + 1) : (cj + 1)] = rSnip[:];
+		// TODO: Finish refactoring this
+		// vector<City> tSnip(&cities[(ci + 1)], &cities(cj + 1)]);
+		// vector<City> rSnip(reverse(tSnip.begin(), tSnip.end()));
+		// cities[(ci + 1) : (cj + 1)] = rSnip[:];
 	}
 	else
-	//the snippet wraps around the end of the list, so ninjutsu is needed...
-		tSnip = cities[(ci + 1) : ] + tour[:(cj + 1)]
-		rSnip = list(reversed(tSnip))
-		divider = len(tour[(ci + 1) : ])
-		tour[(ci + 1) : ] = rSnip[:divider]
-		tour[:(cj + 1)] = rSnip[divider:]
-
+	{
+		// TODO: Finish refactoring this
+		//the snippet wraps around the end of the list, so ninjutsu is needed...
+		// tSnip = cities[(ci + 1) : ] + tour[:(cj + 1)]
+		// rSnip = list(reversed(tSnip))
+		// divider = len(tour[(ci + 1) : ])
+		// tour[(ci + 1) : ] = rSnip[:divider]
+		// tour[:(cj + 1)] = rSnip[divider:]
+	}
 }
-*/
+
+// Python version below
+// def tChange(tour, ci, cj):
+//     n = len(tour)
+//     # snippet does not wrap around end of list
+//     if ci < cj:
+//         tSnip = tour[(ci+1):(cj+1)]
+//         rSnip = list(reversed(tSnip))
+//         tour[(ci + 1):(cj + 1)] = rSnip[:]
+//     else:
+//         # the snippet wraps around the end of the list, so ninjutsu is needed...
+//         tSnip = tour[(ci+1):] + tour[:(cj+1)]
+//         rSnip = list(reversed(tSnip))
+//         divider = len(tour[(ci+1):])
+//         tour[(ci+1):] = rSnip[:divider]
+//         tour[:(cj + 1)] = rSnip[divider:]
+
+//     return tour
