@@ -214,7 +214,7 @@ tuple<int, int, float> tSelect(vector<City> &cities)
 	{
 		dE = (cities[ci].distanceTo(cities[cj]) + cities[cinx].distanceTo(cities[cjnx]) - cities[ci].distanceTo(cities[cinx]) - cities[cj].distanceTo(cities[cjnx]));
 	}
-	tuple<int, int, float> result (ci, cj, float(dE));
+	tuple<int, int, float> result(ci, cj, float(dE));
 	return result;
 }
 
@@ -231,7 +231,7 @@ bool accept(float dE, int temp)
 			acceptance = true;
 	}
 
-	else 
+	else
 		acceptance = true;
 
 	return acceptance;
@@ -244,42 +244,40 @@ void tChange(vector<City> &cities, int ci, int cj)
 	//snippet does not wrap around end of list
 	if (ci < cj)
 	{
-		// TODO: Debug only
-		City test = cities[ci];
-		City test2 = cities[(ci + 1)];
-		City test3 = cities[cj];
-		City test4 = cities[(cj + 1)];
-		
 		vector<City> tSnip(&cities[(ci + 1)], &cities[(cj + 1)]);
 		reverse(tSnip.begin(), tSnip.end());
-		// TODO: How to set the vector values in this range?
-		//assign(&cities.begin() + ci + 1, &cities.begin() + cj + 1, tSnip[]); 
+
+		int curr = ci + 1;
+		for (int i = 0; i < tSnip.size(); i++)
+		{
+			City test222 = cities[curr];
+			cities[curr] = tSnip[i];
+			curr++;
+		}
 	}
 	else
 	{
+		// TODO: This part needs work
 		//the snippet wraps around the end of the list, so ninjutsu is needed...
-		// tSnip = tour[(ci + 1) : ] + tour[:(cj + 1)]
-		// rSnip = list(reversed(tSnip))
-		// divider = len(tour[(ci + 1) : ])
-		// tour[(ci + 1) : ] = rSnip[:divider]
-		// tour[:(cj + 1)] = rSnip[divider:]
+		vector<City> tSnip(&cities[(ci + 1)], &cities[(cj + 1)]);
+		reverse(tSnip.begin(), tSnip.end());
+		vector<City> tempCities(&cities[(ci + 1)], &cities.end());
+		int divider = tempCities.size();
+
+		// First part
+		int curr = ci + 1;
+		for (int i = 0; i < divider; i++)
+		{
+			cities[curr] = tSnip[i];
+			curr++;
+		}
+
+		// Second part
+		curr = 0;
+		for (int i = divider; i < tSnip.size(); i++)
+		{
+			cities[curr] = tSnip[i];
+			curr++;
+		}
 	}
 }
-
-// Python version below
-// def tChange(tour, ci, cj):
-//     n = len(tour)
-//     # snippet does not wrap around end of list
-//     if ci < cj:
-//         tSnip = tour[(ci+1):(cj+1)]
-//         rSnip = list(reversed(tSnip))
-//         tour[(ci + 1):(cj + 1)] = rSnip[:]
-//     else:
-//         # the snippet wraps around the end of the list, so ninjutsu is needed...
-//         tSnip = tour[(ci+1):] + tour[:(cj+1)]
-//         rSnip = list(reversed(tSnip))
-//         divider = len(tour[(ci+1):])
-//         tour[(ci+1):] = rSnip[:divider]
-//         tour[:(cj + 1)] = rSnip[divider:]
-
-//     return tour
