@@ -72,10 +72,10 @@ int City::distanceTo(City city)
 int tourLength(vector<City> &cities);
 void initTour(ifstream &inputFile, vector<City> &cities);
 void printVector(vector<City> &cities);
-void anneal(vector<City> &cities, int Tmax, int alpha, int steps, int attempts, int changes, int startTime);
-void tSearch(vector<City> &cities, int temp, int attempts, int changes);
+void anneal(vector<City> &cities, float Tmax, float alpha, int steps, int attempts, int changes, int startTime);
+void tSearch(vector<City> &cities, float temp, int attempts, int changes);
 tuple<int, int, float> tSelect(vector<City> &cities);
-bool accept(float dE, int temp);
+bool accept(float dE, float temp);
 void tChange(vector<City> &cities, int ci, int cj);
 
 int main(int argc, char *argv[])
@@ -101,8 +101,8 @@ int main(int argc, char *argv[])
 
 	//initialize simulation parameters per recommendations by Hansen
 	int n = cities.size();
-	int Tmax = nearbyint(sqrt(n));
-	int alpha = 0.95;
+	float Tmax = nearbyint(sqrt(n));
+	float alpha = 0.95;
 	int steps = 20 * nearbyint(log1p(n + 1));
 	int attempts = 100 * n;
 	int changes = 10 * n;
@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
 	anneal(cities, Tmax, alpha, steps, attempts, changes, startTime);
 
 	int duration = (clock() - startTime) / (double)CLOCKS_PER_SEC;
-	cout << "Algorithm ran in " << duration << "seconds." << endl;
+	cout << "Algorithm ran in " << duration << " seconds." << endl;
 
 	//write outputfile
 	string outfilename = filename + ".tourcpp";
@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
 int tourLength(vector<City> &cities)
 {
 	int n = cities.size();
-	int dSum = cities[n - 1].distanceTo(cities[0]); //fix this
+	int dSum = cities[n - 1].distanceTo(cities[0]);
 	for (int i = 0; i < (n - 1); i++)
 	{
 		dSum += cities[i].distanceTo(cities[i + 1]);
@@ -160,13 +160,11 @@ void printVector(vector<City> &cities)
 	}
 }
 
-void anneal(vector<City> &cities, int Tmax, int alpha, int steps, int attempts, int changes, int startTime)
+void anneal(vector<City> &cities, float Tmax, float alpha, int steps, int attempts, int changes, int startTime)
 {
-	int temp = Tmax;
+	float temp = Tmax;
 	for (int i = 0; i < steps; i++)
 	{
-		//changed to loop up to
-		//while temp > 1e-6:
 		int time = (clock() - startTime) / (double)CLOCKS_PER_SEC;
 		cout << "Temperature = " << temp << ", Tour Length = " << tourLength(cities) << ", Time Elapsed = " << time << endl;
 		tSearch(cities, temp, attempts, changes);
@@ -174,7 +172,7 @@ void anneal(vector<City> &cities, int Tmax, int alpha, int steps, int attempts, 
 	}
 }
 
-void tSearch(vector<City> &cities, int temp, int attempts, int changes)
+void tSearch(vector<City> &cities, float temp, int attempts, int changes)
 {
 	int nAtt = 0;
 	int nChg = 0;
@@ -218,26 +216,20 @@ tuple<int, int, float> tSelect(vector<City> &cities)
 	return result;
 }
 
-//I'm not sure what line 214 is calculating or if this function is returning just a bool?
-bool accept(float dE, int temp)
+bool accept(float dE, float temp)
 {
 	bool acceptance;
 	if (dE > 0)
 	{
-		int a = (exp(-dE / temp) > rand());
-		if (a == 0)
-			acceptance = false;
-		else
-			acceptance = true;
+		acceptance = (exp(-dE / temp) > rand());
 	}
-
 	else
+	{
 		acceptance = true;
-
-	return acceptance;
+	}
+	return acceptance
 }
 
-// TODO: Patrick refactored, please test
 void tChange(vector<City> &cities, int ci, int cj)
 {
 	int n = cities.size();
