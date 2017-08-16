@@ -237,47 +237,43 @@ bool accept(float dE, int temp)
 	return acceptance;
 }
 
-// TODO: Finish refactoring this
+// TODO: Patrick refactored, please test
 void tChange(vector<City> &cities, int ci, int cj)
 {
 	int n = cities.size();
-	//snippet does not wrap around end of list
-	if (ci < cj)
-	{
-		vector<City> tSnip(&cities[(ci + 1)], &cities[(cj + 1)]);
-		reverse(tSnip.begin(), tSnip.end());
 
-		int curr = ci + 1;
-		for (int i = 0; i < tSnip.size(); i++)
-		{
-			City test222 = cities[curr];
-			cities[curr] = tSnip[i];
-			curr++;
-		}
+	// define iterators for the snip boundaries
+	vector<City>::iterator snipStart = cities.begin();
+	vector<City>::iterator snipEnd = cities.begin();
+
+	if ((ci + 1) < cities.size())
+	{
+		advance(snipStart, ci + 1);
+	}
+
+	if ((cj + 1) < cities.size())
+	{
+		advance(snipEnd, cj + 1);
 	}
 	else
 	{
-		// TODO: This part needs work
+		snipEnd = cities.end();
+	}
+
+	//snippet does not wrap around end of list
+	if (ci < cj)
+	{
+		reverse(snipStart, snipEnd);
+	}
+	else
+	{
 		//the snippet wraps around the end of the list, so ninjutsu is needed...
-		vector<City> tSnip(&cities[(ci + 1)], &cities[(cj + 1)]);
-		reverse(tSnip.begin(), tSnip.end());
-		vector<City> tempCities(&cities[(ci + 1)], &cities.end());
-		int divider = tempCities.size();
+		//for Python at least, modular wizardry is needed for C++
+		int lss = n + cj - ci;
 
-		// First part
-		int curr = ci + 1;
-		for (int i = 0; i < divider; i++)
+		for (int k = 1; k < lss / 2 + 1; ++k)
 		{
-			cities[curr] = tSnip[i];
-			curr++;
-		}
-
-		// Second part
-		curr = 0;
-		for (int i = divider; i < tSnip.size(); i++)
-		{
-			cities[curr] = tSnip[i];
-			curr++;
+			swap(cities[(ci + k) % n], cities[(n + cj - k + 1) % n]);
 		}
 	}
 }
