@@ -21,7 +21,7 @@ using namespace std;
 class City
 {
 
-  public:
+public:
 	int number;
 	int x;
 	int y;
@@ -72,10 +72,10 @@ int City::distanceTo(City city)
 int tourLength(vector<City> &cities);
 void initTour(ifstream &inputFile, vector<City> &cities);
 void printVector(vector<City> &cities);
-void anneal(vector<City> &cities, float Tmax, float alpha, int steps, int attempts, int changes, int startTime);
-void tSearch(vector<City> &cities, float temp, int attempts, int changes);
-tuple<int, int, float> tSelect(vector<City> &cities);
-bool accept(float dE, float temp);
+void anneal(vector<City> &cities, double Tmax, double alpha, int steps, int attempts, int changes, int startTime);
+void tSearch(vector<City> &cities, double temp, int attempts, int changes);
+tuple<int, int, double> tSelect(vector<City> &cities);
+bool accept(double dE, double temp);
 void tChange(vector<City> &cities, int ci, int cj);
 
 int main(int argc, char *argv[])
@@ -101,9 +101,9 @@ int main(int argc, char *argv[])
 
 	//initialize simulation parameters per recommendations by Hansen
 	int n = cities.size();
-	float Tmax = nearbyint(sqrt(n));
-	float alpha = 0.95;
-	int steps = 20 * nearbyint(log1p(n + 1));
+	double Tmax = nearbyint(sqrt(n));
+	double alpha = 0.95;
+	int steps = 20 * nearbyint(log1p(n - 1));
 	int attempts = 100 * n;
 	int changes = 10 * n;
 
@@ -113,10 +113,10 @@ int main(int argc, char *argv[])
 	anneal(cities, Tmax, alpha, steps, attempts, changes, startTime);
 
 	int duration = (clock() - startTime) / (double)CLOCKS_PER_SEC;
-	cout << "Algorithm ran in " << duration << " seconds." << endl;
+	cout << "Algorithm ran in " << duration << "seconds." << endl;
 
 	//write outputfile
-	string outfilename = filename + ".tourcpp";
+	string outfilename = filename + ".tour";
 	outputFile.open(outfilename.c_str());
 
 	outputFile << tourLength(cities) << endl;
@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
 int tourLength(vector<City> &cities)
 {
 	int n = cities.size();
-	int dSum = cities[n - 1].distanceTo(cities[0]);
+	int dSum = cities[n - 1].distanceTo(cities[0]); //fix this
 	for (int i = 0; i < (n - 1); i++)
 	{
 		dSum += cities[i].distanceTo(cities[i + 1]);
@@ -160,11 +160,13 @@ void printVector(vector<City> &cities)
 	}
 }
 
-void anneal(vector<City> &cities, float Tmax, float alpha, int steps, int attempts, int changes, int startTime)
+void anneal(vector<City> &cities, double Tmax, double alpha, int steps, int attempts, int changes, int startTime)
 {
-	float temp = Tmax;
+	double temp = Tmax;
 	for (int i = 0; i < steps; i++)
 	{
+		//changed to loop up to
+		//while temp > 1e-6:
 		int time = (clock() - startTime) / (double)CLOCKS_PER_SEC;
 		cout << "Temperature = " << temp << ", Tour Length = " << tourLength(cities) << ", Time Elapsed = " << time << endl;
 		tSearch(cities, temp, attempts, changes);
@@ -172,7 +174,7 @@ void anneal(vector<City> &cities, float Tmax, float alpha, int steps, int attemp
 	}
 }
 
-void tSearch(vector<City> &cities, float temp, int attempts, int changes)
+void tSearch(vector<City> &cities, double temp, int attempts, int changes)
 {
 	int nAtt = 0;
 	int nChg = 0;
@@ -180,7 +182,7 @@ void tSearch(vector<City> &cities, float temp, int attempts, int changes)
 	while (nAtt < attempts && nChg < changes)
 	{
 		// tSelect will return the tuple ci, cj, dE
-		tuple<int, int, float> selectionTuple = tSelect(cities);
+		tuple<int, int, double> selectionTuple = tSelect(cities);
 		if (accept(get<2>(selectionTuple), temp))
 		{
 			tChange(cities, get<0>(selectionTuple), get<1>(selectionTuple));
@@ -194,7 +196,7 @@ void tSearch(vector<City> &cities, float temp, int attempts, int changes)
 	}
 }
 
-tuple<int, int, float> tSelect(vector<City> &cities)
+tuple<int, int, double> tSelect(vector<City> &cities)
 {
 	//pick random cities in tour (-> remainder will be a number between 0 and max-1)
 	int max = cities.size();
@@ -206,32 +208,38 @@ tuple<int, int, float> tSelect(vector<City> &cities)
 	int cinx = (ci + 1) % cities.size();
 	int cjnx = (cj + 1) % cities.size();
 
+
 	//calculate energy change, i.e.tour length change, for reversing the sequence between ci and cj
 	int dE = 0;
 	if (ci != cj)
 	{
 		dE = (cities[ci].distanceTo(cities[cj]) + cities[cinx].distanceTo(cities[cjnx]) - cities[ci].distanceTo(cities[cinx]) - cities[cj].distanceTo(cities[cjnx]));
+
 	}
-	tuple<int, int, float> result(ci, cj, float(dE));
+	tuple<int, int, double> result(ci, cj, double(dE));
 	return result;
 }
 
-bool accept(float dE, float temp)
+//I'm not sure what line 214 is calculating or if this function is returning just a bool?
+bool accept(double dE, double temp)
 {
 	bool acceptance;
 	if (dE > 0)
 	{
 		acceptance = (exp(-dE / temp) > rand());
 	}
+
 	else
-	{
 		acceptance = true;
-	}
-	return acceptance
+
+	return acceptance;
 }
 
+// TODO: Patrick refactored, please test
 void tChange(vector<City> &cities, int ci, int cj)
 {
+
+	swap(cities[ci], cities[cj]);
 	int n = cities.size();
 
 	// define iterators for the snip boundaries
