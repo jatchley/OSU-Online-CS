@@ -244,6 +244,10 @@ void tChange(vector<City> &cities, int ci, int cj)
 	{
 		advance(snipStart, ci + 1);
 	}
+	else
+	{
+		snipStart = cities.begin();
+	}
 
 	if ((cj + 1) < cities.size())
 	{
