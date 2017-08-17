@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
 	anneal(cities, Tmax, alpha, steps, attempts, changes, startTime);
 
 	int duration = (clock() - startTime) / (double)CLOCKS_PER_SEC;
-	cout << "Algorithm ran in " << duration << "seconds." << endl;
+	cout << "Algorithm ran in " << duration << " seconds." << endl;
 
 	//write outputfile
 	string outfilename = filename + ".tour";
@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
 int tourLength(vector<City> &cities)
 {
 	int n = cities.size();
-	int dSum = cities[n - 1].distanceTo(cities[0]); //fix this
+	int dSum = cities[n - 1].distanceTo(cities[0]);
 	for (int i = 0; i < (n - 1); i++)
 	{
 		dSum += cities[i].distanceTo(cities[i + 1]);
@@ -165,8 +165,6 @@ void anneal(vector<City> &cities, double Tmax, double alpha, int steps, int atte
 	double temp = Tmax;
 	for (int i = 0; i < steps; i++)
 	{
-		//changed to loop up to
-		//while temp > 1e-6:
 		int time = (clock() - startTime) / (double)CLOCKS_PER_SEC;
 		cout << "Temperature = " << temp << ", Tour Length = " << tourLength(cities) << ", Time Elapsed = " << time << endl;
 		tSearch(cities, temp, attempts, changes);
@@ -220,7 +218,6 @@ tuple<int, int, double> tSelect(vector<City> &cities)
 	return result;
 }
 
-//I'm not sure what line 214 is calculating or if this function is returning just a bool?
 bool accept(double dE, double temp)
 {
 	bool acceptance;
@@ -235,11 +232,8 @@ bool accept(double dE, double temp)
 	return acceptance;
 }
 
-// TODO: Patrick refactored, please test
 void tChange(vector<City> &cities, int ci, int cj)
 {
-
-	swap(cities[ci], cities[cj]);
 	int n = cities.size();
 
 	// define iterators for the snip boundaries
